@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.btn {
+  @apply rounded-lg transition hover:opacity-70 w-full disabled:opacity-70 disabled:cursor-not-allowed py-3 text-lg font-semibold border-2;
+}
+
+.btn-outline {
+  @apply bg-white border-black text-black;
+}
+
+.btn-primary {
+  @apply bg-rose-500 border-rose-500 text-white;
+}
+
+.btn-sm {
+  @apply py-1 text-sm font-light border;
+}
