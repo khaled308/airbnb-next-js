@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 
 interface Props {
@@ -27,12 +27,16 @@ const Modal = ({
   secondaryAction,
   secondaryActionLabel,
 }: Props) => {
-  const [showModel, setShowModel] = useState(isOpen);
+  const [showModal, setShowModal] = useState(isOpen);
+
+  useEffect(() => {
+    setShowModal(isOpen);
+  }, [isOpen]);
 
   const handelClose = useCallback(() => {
     if (disabled) return;
 
-    setShowModel(false);
+    setShowModal(false);
 
     setTimeout(() => {
       onClose();
@@ -56,8 +60,8 @@ const Modal = ({
             transition 
             duration-300 
             h-full 
-            ${showModel ? "translate-y-0" : "translate-y-full"}
-            ${showModel ? "opacity-100" : "opacity-0"}  
+            ${showModal ? "translate-y-0" : "translate-y-full"}
+            ${showModal ? "opacity-100" : "opacity-0"}  
             `}
           >
             <div className="rounded-lg shadow-lg h-full md:h-auto w-full bg-white">
