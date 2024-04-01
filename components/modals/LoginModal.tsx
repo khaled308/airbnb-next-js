@@ -7,17 +7,16 @@ import {
   UseFormRegister,
   useForm,
 } from "react-hook-form";
-import axios from "axios";
+import { signIn } from "next-auth/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Modal from "./Modal";
-import { useRegisterModal } from "@/hooks/useRegisterModal";
 import Input from "../form/Input";
-import { registerSchema } from "@/schemas/userSchemas";
+import { loginSchema } from "@/schemas/userSchemas";
 import toast from "react-hot-toast";
 import { FcGoogle } from "react-icons/fc";
+import { useLoginModal } from "@/hooks/useLoginModal";
 import { useRouter } from "next/navigation";
 import { FaGithub } from "react-icons/fa";
-import { signIn } from "next-auth/react";
 
 interface InputProps {
   register: UseFormRegister<FieldValues>;
@@ -29,16 +28,10 @@ const Content = ({ register, errors }: InputProps) => {
     <div className="space-y-4">
       <div>
         <h2 className="text-2xl font-bold">Welcome to Airbnb</h2>
-        <p className="font-light text-neutral-500 mt-2">Create an account!</p>
+        <p className="font-light text-neutral-500 mt-2">
+          Login to your account!
+        </p>
       </div>
-
-      <Input
-        id="name"
-        required
-        label="name"
-        errors={errors}
-        register={register}
-      />
       <Input
         id="email"
         required
@@ -62,11 +55,17 @@ const Content = ({ register, errors }: InputProps) => {
 const Footer = () => {
   return (
     <div className="space-y-4 mt-3">
-      <button className="relative btn btn-outline" onClick={()=> signIn('google')}>
+      <button
+        className="relative btn btn-outline"
+        onClick={() => signIn("google")}
+      >
         <FcGoogle size={24} className="absolute left-4 top-4" />
         <span>Continue with Google</span>
       </button>
-      <button className="relative btn btn-outline" onClick={()=> signIn('github')}>
+      <button
+        className="relative btn btn-outline"
+        onClick={() => signIn("github")}
+      >
         <FaGithub size={24} className="absolute left-4 top-4" />
         <span>Continue with Github</span>
       </button>
@@ -82,8 +81,8 @@ const Footer = () => {
   );
 };
 
-const RegisterModal = () => {
-  const registerModal = useRegisterModal();
+const LoginModal = () => {
+  const loginModal = useLoginModal();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -92,34 +91,37 @@ const RegisterModal = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<FieldValues>({
-    resolver: zodResolver(registerSchema),
+    resolver: zodResolver(loginSchema),
   });
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
-    console.log(data, errors);
 
-    axios
-      .post("/api/auth/register", data)
-      .then(() => {
-        toast.success("Account created successfully!");
+    signIn("credentials", {
+      email: data.email,
+      password: data.password,
+      redirect: false,
+    }).then((cb) => {
+      setIsLoading(false);
+
+      if (cb?.ok) {
+        loginModal.close();
         router.refresh();
-        registerModal.close();
-      })
-      .catch((error) => {
-        toast.error(error.response.data.error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+        toast.success("Logged in successfully");
+      }
+
+      if (cb?.error) {
+        toast.error("Invalid email or password");
+      }
+    });
   };
 
   return (
     <Modal
-      isOpen={registerModal.isOpen}
-      onClose={registerModal.close}
-      title="Sign Up"
-      actionLabel="Sign Up"
+      isOpen={loginModal.isOpen}
+      onClose={loginModal.close}
+      title="Login"
+      actionLabel="Login"
       onSubmit={handleSubmit(onSubmit)}
       body={<Content register={register} errors={errors} />}
       footer={<Footer />}
@@ -127,4 +129,4 @@ const RegisterModal = () => {
   );
 };
 
-export default RegisterModal;
+export default LoginModal;

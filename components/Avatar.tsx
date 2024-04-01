@@ -1,9 +1,9 @@
 import Image from "next/image";
 
-const Avatar = () => {
+const Avatar = ({ url = "/placeholder.jpg" }: { url?: string }) => {
   return (
     <Image
-      src="/placeholder.jpg"
+      src={url}
       alt="avatar"
       width={30}
       height={30}
