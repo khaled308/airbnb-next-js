@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Search from "./Search";
 import UserMenu from "./UserMenu";
+import Categories from "./Categories";
 
 const Navbar = () => {
   return (
@@ -13,6 +14,7 @@ const Navbar = () => {
         <Search />
         <UserMenu />
       </div>
+      <Categories />
     </nav>
   );
 };
