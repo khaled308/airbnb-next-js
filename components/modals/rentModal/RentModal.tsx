@@ -26,6 +26,7 @@ const RentModal = () => {
   const rentModal = useRentModal();
 
   const category = watch("category");
+  const location = watch("location");
   const setCustomValue = (id: string, value: any) => {
     setValue(id, value, {
       shouldDirty: true,
@@ -38,7 +39,9 @@ const RentModal = () => {
     [STEPS.CATEGORY]: (
       <Category onSelectCategory={setCustomValue} selectedCategory={category} />
     ),
-    [STEPS.LOCATION]: <Location />,
+    [STEPS.LOCATION]: (
+      <Location location={location} setSelectedLocation={setCustomValue} />
+    ),
     [STEPS.INFO]: <Info />,
     [STEPS.PHOTOS]: <Photos />,
     [STEPS.DESCRIPTION]: <Description />,
