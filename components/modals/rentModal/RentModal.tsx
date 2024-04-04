@@ -27,6 +27,10 @@ const RentModal = () => {
 
   const category = watch("category");
   const location = watch("location");
+  const guestCount = watch("guestCount");
+  const roomCount = watch("roomCount");
+  const bathroomCount = watch("bathroomCount");
+
   const setCustomValue = (id: string, value: any) => {
     setValue(id, value, {
       shouldDirty: true,
@@ -42,7 +46,14 @@ const RentModal = () => {
     [STEPS.LOCATION]: (
       <Location location={location} setSelectedLocation={setCustomValue} />
     ),
-    [STEPS.INFO]: <Info />,
+    [STEPS.INFO]: (
+      <Info
+        guestCount={guestCount}
+        setCustomValue={setCustomValue}
+        roomCount={roomCount}
+        bathroomCount={bathroomCount}
+      />
+    ),
     [STEPS.PHOTOS]: <Photos />,
     [STEPS.DESCRIPTION]: <Description />,
     [STEPS.PRICE]: <Price />,
